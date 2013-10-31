@@ -1,0 +1,30 @@
+<package>
+  <name>imu_tools</name>
+  <version>0.1.0</version>
+  <description> 
+    Various tools for IMU devices
+  </description>
+  <maintainer email="mguenthe@uni-osnabrueck.de">Ivan Dryanovski</maintainer>
+  <license>BSD, GPL</license>
+  
+  <url>http://ros.org/wiki/imu_tools</url>
+  <author>Ivan Dryanovski</author>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <!-- imu_filter_madgwick -->
+  <run_depend>roscpp</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>nodelet</run_depend>
+  <run_depend>message_filters</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  
+  <!-- rviz_imu_plugin -->
+  <run_depend>rviz</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

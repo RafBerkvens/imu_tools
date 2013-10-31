@@ -1,32 +1,27 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
+project(imu_filter_madgwick)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-set(ROS_BUILD_TYPE RelWithDebInfo)
-
-rosbuild_init()
-
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+find_package(catkin REQUIRED COMPONENTS roscpp sensor_msgs geometry_msgs tf
+    nodelet message_filters dynamic_reconfigure)
 
 # Generate dynamic parameters
-rosbuild_find_ros_package(dynamic_reconfigure)
-include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
-gencfg()
+generate_dynamic_reconfigure_options(cfg/ImuFilterMadgwick.cfg)
+
+# Declare that this catkin package's runtime dependencies
+catkin_package(CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs tf nodelet 
+    message_filters dynamic_reconfigure)
+
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${imu_filter_madgwick_SOURCE_DIR}/include)
 
 # create imu_filter library
-rosbuild_add_library (imu_filter src/imu_filter.cpp)
-rosbuild_link_boost(imu_filter signals)
+add_library(imu_filter src/imu_filter.cpp)
+target_link_libraries(imu_filter ${Boost_LIBRARIES})
 
 # create imu_filter_nodelet library
-rosbuild_add_library (imu_filter_nodelet src/imu_filter_nodelet.cpp)
-target_link_libraries (imu_filter_nodelet imu_filter)
+add_library(imu_filter_nodelet src/imu_filter_nodelet.cpp)
+target_link_libraries(imu_filter_nodelet imu_filter)
 
 # create imu_filter_node executable
-rosbuild_add_executable(imu_filter_node src/imu_filter_node.cpp)
-target_link_libraries (imu_filter_node imu_filter)
+add_executable(imu_filter_node src/imu_filter_node.cpp)
+target_link_libraries(imu_filter_node imu_filter ${catkin_LIBRARIES})
